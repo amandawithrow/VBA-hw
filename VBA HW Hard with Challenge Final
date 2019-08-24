@@ -113,12 +113,11 @@ For Each ws In ThisWorkbook.Worksheets
     Dim max1 As Double
     max1 = ws.Application.WorksheetFunction.Max(ws.Range("K:K"))
 
-    MsgBox (max1)
 
     'Find row for Greatest % Increase
     Dim row_inc As Double
     row_inc = ws.Application.WorksheetFunction.Match(max1, ws.Range("K:K"), 0)
-    MsgBox (row_inc)
+   
 
     'Print Greatest % Increase, ticker and title in summary
     ws.Cells(2, 14).Value = "Greatest % Increase"
@@ -129,12 +128,11 @@ For Each ws In ThisWorkbook.Worksheets
     Dim min1 As Double
     min1 = ws.Application.WorksheetFunction.Min(ws.Range("K:K"))
 
-    MsgBox (min1)
 
     'Find row for Greatest % Decrease
     Dim row_dec As Double
     row_dec = ws.Application.WorksheetFunction.Match(min1, ws.Range("K:K"), 0)
-    MsgBox (row_dec)
+   
 
     'Print Greatest % Decrease, ticker and title in summary
     ws.Cells(3, 14).Value = "Greatest % Decrease"
@@ -145,12 +143,12 @@ For Each ws In ThisWorkbook.Worksheets
     Dim max_vol As Double
     max_vol = ws.Application.WorksheetFunction.Max(ws.Range("L:L"))
 
-    MsgBox (max_vol)
+  
 
     'Find row for greatest total volume
     Dim row_volume As Double
     row_volume = ws.Application.WorksheetFunction.Match(max_vol, ws.Range("L:L"), 0)
-    MsgBox (row_volume)
+ 
 
     'Print greatest total volume, ticker and title in summary
     ws.Cells(4, 14).Value = "Greatest Total Volume"
