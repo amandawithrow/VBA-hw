@@ -1,0 +1,168 @@
+Sub Volume_and_Price()
+
+'Iterate through worksheets automatically
+Dim ws As Worksheet
+For Each ws In ThisWorkbook.Worksheets
+
+    'Set initial variable to hold ticker symbol
+    Dim ticker As String
+
+    'Set initial variables to hold total volume, opening price, closing price, change in price, traded per ticker symbol
+    Dim volume, open_price, close_price, price_change, percent_change As Double
+
+    volume = 0
+    open_price = 0
+    close_price = 0
+    price_change = 0
+    percent_change = 0
+
+    'Add headings for summary table
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Yearly Change"
+    ws.Cells(1, 11).Value = "Percent Change"
+    ws.Cells(1, 12).Value = "Total Volume"
+
+
+    'Keep track of location to put info in summary table
+    Dim summary_table_row As Integer
+    summary_table_row = 2
+
+    'Row count for first page
+    NumRows = ws.Cells(Rows.Count, "A").End(xlUp).Row
+
+    'Set first opening price
+    open_price = ws.Cells(2, 3).Value
+
+    'iterate through pages using for loop and conditionals
+    For i = 2 To NumRows
+   
+        'Check if same ticker symbol - if not, add info to summary table
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+            'Set ticker name
+            ticker = ws.Cells(i, 1).Value
+
+            'Add to volume total
+            volume = volume + ws.Cells(i, 7).Value
+
+            'Print ticker name in summary table
+            ws.Cells(summary_table_row, 9).Value = ticker
+
+            'print total volume to summary table
+            ws.Cells(summary_table_row, 12).Value = volume
+
+            If (open_price > 0) Then
+
+                'Calculate price change
+                close_price = ws.Cells(i, 6).Value
+                price_change = close_price - open_price
+
+                'print price change to summary table
+                ws.Cells(summary_table_row, 10).Value = price_change
+
+                'calculate % price change
+                percent_change = Round(((price_change / open_price) * 100), 2)
+        
+                'print % price change to summary table
+                ws.Cells(summary_table_row, 11).Value = percent_change
+
+                'Add one to the summary table Row
+                summary_table_row = summary_table_row + 1
+
+                'reset the volume total
+                volume = 0
+
+                'reset open_price
+                open_price = ws.Cells(i + 1, 3).Value
+            Else
+                'print zero values for price change, % price change
+                ws.Cells(summary_table_row, 10).Value = 0
+                ws.Cells(summary_table_row, 11).Value = 0
+
+                'Add one to the summary table Row
+                summary_table_row = summary_table_row + 1
+
+                'reset the volume total
+                volume = 0
+
+                'reset open_price
+                open_price = ws.Cells(i + 1, 3).Value
+            End If
+        
+        'If same ticker symbol add volume to total volume count
+        Else
+            'add to volume total
+            volume = volume + ws.Cells(i, 7).Value
+        End If
+
+    Next i
+
+    'iterate through the summary table to apply conditional formatting
+    For i = 2 To summary_table_row
+        If ws.Cells(i, 10).Value > 0 Then
+            ws.Cells(i, 10).Interior.ColorIndex = 4
+        Else
+            ws.Cells(i, 10).Interior.ColorIndex = 3
+        End If
+    Next i
+
+    'Print titles for ticker and value
+    ws.Cells(1, 15).Value = "Ticker"
+    ws.Cells(1, 16).Value = "Value"
+
+    'Find Greatest % Increase
+    Dim max1 As Double
+    max1 = ws.Application.WorksheetFunction.Max(ws.Range("K:K"))
+
+    MsgBox (max1)
+
+    'Find row for Greatest % Increase
+    Dim row_inc As Double
+    row_inc = ws.Application.WorksheetFunction.Match(max1, ws.Range("K:K"), 0)
+    MsgBox (row_inc)
+
+    'Print Greatest % Increase, ticker and title in summary
+    ws.Cells(2, 14).Value = "Greatest % Increase"
+    ws.Cells(2, 15).Value = ws.Cells(row_inc, 9).Value
+    ws.Cells(2, 16).Value = ws.Cells(row_inc, 11).Value
+
+    'Find Greatest % Decrease
+    Dim min1 As Double
+    min1 = ws.Application.WorksheetFunction.Min(ws.Range("K:K"))
+
+    MsgBox (min1)
+
+    'Find row for Greatest % Decrease
+    Dim row_dec As Double
+    row_dec = ws.Application.WorksheetFunction.Match(min1, ws.Range("K:K"), 0)
+    MsgBox (row_dec)
+
+    'Print Greatest % Decrease, ticker and title in summary
+    ws.Cells(3, 14).Value = "Greatest % Decrease"
+    ws.Cells(3, 15).Value = ws.Cells(row_dec, 9).Value
+    ws.Cells(3, 16).Value = ws.Cells(row_dec, 11).Value
+
+    'Find Greatest Total Volume
+    Dim max_vol As Double
+    max_vol = ws.Application.WorksheetFunction.Max(ws.Range("L:L"))
+
+    MsgBox (max_vol)
+
+    'Find row for greatest total volume
+    Dim row_volume As Double
+    row_volume = ws.Application.WorksheetFunction.Match(max_vol, ws.Range("L:L"), 0)
+    MsgBox (row_volume)
+
+    'Print greatest total volume, ticker and title in summary
+    ws.Cells(4, 14).Value = "Greatest Total Volume"
+    ws.Cells(4, 15).Value = ws.Cells(row_volume, 9).Value
+    ws.Cells(4, 16).Value = ws.Cells(row_volume, 12).Value
+
+Next ws
+End Sub
+
+
+
+
+
+
+
